@@ -3,8 +3,7 @@
 #FROM rhel7:latest
 FROM centos:latest
 
-# TODO: Put the maintainer name in the image metadata
-MAINTAINER Your Name <khelilhamdi@gmail.com>
+MAINTAINER KHELIL Hamdi <khelilhamdi@gmail.com>
 
 # TODO: Rename the builder environment variable to inform users about application you provide them
 # ENV BUILDER_VERSION 1.0
