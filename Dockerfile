@@ -1,7 +1,7 @@
 # squid-openshift
 # rhel7 repository only works when running on a subscripted host
-FROM rhel7:latest
-#FROM centos:latest
+#FROM rhel7:latest
+FROM centos:latest
 
 # TODO: Put the maintainer name in the image metadata
 MAINTAINER Your Name <khelilhamdi@gmail.com>
