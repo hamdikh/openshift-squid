@@ -3,6 +3,7 @@
 #FROM rhel7:latest
 FROM centos:latest
 
+# TODO: Put the maintainer name in the image metadata
 MAINTAINER KHELIL Hamdi <khelilhamdi@gmail.com>
 
 # TODO: Rename the builder environment variable to inform users about application you provide them
@@ -17,20 +18,18 @@ LABEL io.k8s.description="Squid Proxy" \
 # io.openshift.expose-services="3128:tcp"
 
 # TODO: Install required packages here:
-RUN yum clean all && yum -y update && yum install -y squid && systemctl enable squid 
-
-# TODO (optional): Copy the builder files into /opt/app-root
-# COPY ./<builder_folder>/ /opt/app-root/
-
-# TODO: Copy the S2I scripts to /usr/libexec/s2i, since openshift/base-centos7 image sets io.openshift.s2i.scripts-url label that way, or update that label
-LABEL io.openshift.s2i.scripts-url=image:///usr/libexec/s2i
-COPY ./.s2i/bin /usr/libexec/s2i
+RUN yum clean all && \
+    yum -y update && \
+    yum install -y squid && \
+    systemctl enable squid 
 
 # TODO: Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R squid:squid /etc/squid
-RUN chown -R squid:squid /var/log/squid
-RUN chmod -R 775 /var/log/squid
-
+RUN chown -R squid /etc/squid && \
+    chown -R squid /var/log/squid && \
+    chgrp -R 0 /etc/squid && \
+    chgrp -R 0 /var/log/squid && \
+    chmod -R g+rw /etc/squid && \
+    chmod -R g+rw /var/log/squid 
 
 # This default user is created in the openshift/base-centos7 image
 USER squid
@@ -43,4 +42,6 @@ EXPOSE 3128
 VOLUME ["${SQUID_CACHE_DIR}"]
 
 # TODO: Set the default CMD for the image
-CMD ["usage"]
+ENTRYPOINT ["squid"]
+
+CMD ["-f", "/etc/squid/squid.conf", "-N"]
